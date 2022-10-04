@@ -151,6 +151,12 @@
       function unstupidify(str) {
         return str.toLowerCase().split("-").join("").split(" ").join("");
       }
+      function skip() {
+        if (!!window.lastTime) {
+          window.lastTime -= 500;
+        }
+        generateEquation();
+      }
       window.onload = () => {
         var input = document.getElementById("textInput");
         var equationDisplay = document.getElementById("equation");
@@ -294,6 +300,7 @@
       <h2 id="equation">1+1</h2>
       <button onclick="autoSolve()" disabled>Auto Solve (Unavailable)</button>
       <button onclick="help()">Help</button>
+      <button onclick="skip()">Skip</button>
       <br />
       <br />
       <input id="textInput" />
