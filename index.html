@@ -191,7 +191,7 @@
         }, 0);
         setInterval(()=>{
           hintMeter++;
-        },1000);
+        },2000);
         setInterval(()=>{
           if (!window.lastTime) {
             window.lastTime = new Date().getTime();
@@ -343,6 +343,7 @@
         <p>
           If you see a word in Latin, write the English form.
           If you see a word in English, write the Latin form.
+          Hints will slowly reveal over time.
           <br />
           <br />
           <button onclick="help()">Done</button>
