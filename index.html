@@ -1,0 +1,321 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShelfBucket</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+      * {
+        font-family: Inter;
+      }
+      .center {
+        position: fixed;
+        left: 50vw;
+        top: 50vh;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      input {
+        padding: 10px;
+        border-radius: 50px;
+        border: 0;
+        background-color: rgb(255, 255, 255);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+        text-align: center;
+        font-weight: bold;
+      }
+      #rank {
+        padding: 20px;
+        color: white;
+        border-radius: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        border-radius: 10px;
+        border: 0;
+        background: lightgray;
+        color: black;
+        cursor: pointer;
+        margin : 5px;
+      }
+      button:disabled {
+        background:darkgray;
+        color:gray;
+        cursor:not-allowed;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      #progressWrapper {
+        margin: 20px;
+        height: 15px;
+        background: white;
+        box-shadow: 0 3px 20px rgba(0, 0, 0, 0.25);
+        border-radius: 50px;
+        overflow: hidden;
+      }
+      #progressBar {
+        background: rgb(0, 128, 255);
+        border-radius: 50px;
+        height: 100%;
+        width: 0%;
+        transition: 0.25s;
+      }
+      #helpPane {
+        position : fixed;
+        left : 0;
+        top : 0;
+        width : 100vw;
+        height : 100vh;
+        background : rgba(0,0,0,0.25);
+        backdrop-filter : blur(5px);
+        color : rgba(255,255,255,0.75);
+        font-weight:200;
+      }
+      #helpPane > div > p > button {
+        background : rgba(0,0,0,0.25);
+        color : rgba(255,255,255,0.75);
+        backdrop-filter: blur(5px);
+      }
+    </style>
+    <script>
+      var sqrt = Math.sqrt;
+      var equation = "type begin to start";
+      var answer = "begin";
+      var prg = 0;
+      var firstTime;
+      var isInvalidScore = false;
+      var dictionary = {
+        agri:"field",
+        agricola:"farmer",
+        amicus:"friend",
+        animus:"spirit",
+        aqua:"water",
+        athleta:"athlete",
+        casa:"house",
+        domi:"at home",
+        fabula:"story",
+        filia:"daughter",
+        filius:"son",
+        forma:"form",
+        lupa:"she-wolf",
+        nauta:"sailor",
+        patria:"fatherland",
+        poeta:"poet",
+        puella:"girl",
+        puer:"boy",
+        rivus:"brook",
+        Roma:"Rome",
+        terra:"land",
+        via:"road",
+        vir:"man",
+        ego:"I",
+        tu:"you",
+        ambulo:"walk",
+        amo:"love",
+        curo:"take care of",
+        debeo:"ought",
+        est:"is",
+        exspecto:"wait for",
+        habeo:"have",
+        habito:"live",
+        narro:"tell",
+        paro:"prepare",
+        sum:"I am",
+        teneo:"hold",
+        timeo:"fear",
+        video:"see",
+        voco:"call",
+        bene:"well",
+        deinde:"then",
+        diu:"for a long time",
+        non:"not",
+        nunc:"now",
+        postea:"afterward",
+        valde:"very",
+        cum:"with",
+        in:"in",
+        et:"and",
+        itaue:"and so"
+      };
+      var showHelpPane;
+      var helpPaneProgress = 0;
+      function unstupidify(str) {
+        return str.toLowerCase().split("-").join("").split(" ").join("");
+      }
+      window.onload = () => {
+        var input = document.getElementById("textInput");
+        var equationDisplay = document.getElementById("equation");
+        var progress = document.getElementById("progressBar");
+        setInterval(() => {
+          equationDisplay.innerText = equation;
+          progress.style.width = (prg / 20) * 100 + "%";
+          if (unstupidify(input.value) == unstupidify(answer)) {
+            input.value = "";
+            generateEquation();
+            prg++;
+          }
+          if (prg >= 20) {
+            document.getElementById("win").style.display = "block";
+            document.getElementById("play").style.display = "none";
+          } else {
+            document.getElementById("play").style.display = "block";
+            document.getElementById("win").style.display = "none";
+            if (firstTime) {
+              decideRanking();
+            }
+          }
+        }, 0);
+        setInterval(()=>{
+          if (!window.lastTime) {
+            window.lastTime = new Date().getTime();
+          }
+          var deltaTime = (new Date().getTime() - window.lastTime) / 1000;
+          if (showHelpPane) {
+            helpPaneProgress += (1 - helpPaneProgress) * deltaTime * 5;
+          } else {
+            helpPaneProgress -= helpPaneProgress * deltaTime * 5;
+          }
+          document.getElementById("helpPane").style.top = `${(1-helpPaneProgress)*100}vh`;
+          window.lastTime = new Date().getTime();
+        },0);
+      };
+      function generateEquation() {
+        var index = Math.floor(Object.keys(dictionary).length * Math.random());
+        var key = Object.keys(dictionary)[index];
+        if (Math.random() <= 0.5) {
+          equation = key;
+          answer = dictionary[key];
+        } else {
+          answer = key;
+          equation = dictionary[key];
+        }
+        if (!firstTime) {
+          firstTime = performance.now();
+        }/*
+        if (Math.random() < 0.1) {
+          var o = Math.round(Math.random() * 5);
+          equation = `sqrt(${o * o})`;
+        } else {
+          equation =
+            Math.round(Math.random() * 5) +
+            1 +
+            " * " +
+            (Math.round(Math.random() * 5) + 1);
+        }*/
+      }
+      function autoSolve() {
+        var input = document.getElementById("textInput");
+        setInterval(() => {
+          input.value = Math.round(Math.random() * 37);
+        }, 0);
+        isInvalidScore = true;
+      }
+      function help() {
+        showHelpPane = !showHelpPane;
+      }
+      function decideRanking() {
+        var time = performance.now() - firstTime;
+        time /= 1000;
+        document.getElementById("time").innerText = time.toFixed(2);
+        var activeRanking = {
+          time: 120,
+          text: "BAD",
+          color: "purple",
+        };
+        var rankings = [
+          {
+            time: 5,
+            text: "INSANE",
+            color: "black",
+          },
+          {
+            time: 10,
+            text: "SUPER SPEEDY",
+            color: "darkred",
+          },
+          {
+            time: 15,
+            text: "SPEEDY",
+            color: "red",
+          },
+          {
+            time: 20,
+            text: "FAST",
+            color: "orange",
+          },
+          {
+            time: 30,
+            text: "GOOD",
+            color: "green",
+          },
+          {
+            time: 45,
+            text: "NORMAL",
+            color: "blue",
+          },
+          {
+            time: 60,
+            text: "BELOW AVERAGE",
+            color: "brown",
+          },
+        ];
+        for (var i in rankings) {
+          if (time < rankings[i].time) {
+            if (rankings[i].time < activeRanking.time) {
+              activeRanking = rankings[i];
+            }
+          }
+        }
+        if (isInvalidScore) {
+          activeRanking = {
+            time: 0,
+            text: "INVALID",
+            color: "magenta",
+          };
+        }
+        rank.innerText = activeRanking.text;
+        rank.style.backgroundColor = activeRanking.color;
+      }
+    </script>
+  </head>
+  <body>
+    <div id="play" class="center">
+      <h1>ShelfBucket</h1>
+      <p id="time">0.00</p>
+      <h2 id="equation">1+1</h2>
+      <button onclick="autoSolve()" disabled>Auto Solve (Unavailable)</button>
+      <button onclick="help()">Help</button>
+      <br />
+      <br />
+      <input id="textInput" />
+      <br />
+      <div id="progressWrapper"><div id="progressBar"></div></div>
+    </div>
+    <div id="win" class="center">
+      <h1>ShelfBucket!</h1>
+      <p>You win!</p>
+      <h2 id="rank"></h2>
+      <button onclick="window.location.reload()">Retry</button>
+    </div>
+    <div id="helpPane">
+      <div class="center">
+        <p>
+          If you see a word in Latin, write the English form.
+          If you see a word in English, write the Latin form.
+          <br />
+          <br />
+          <button onclick="help()">Done</button>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
