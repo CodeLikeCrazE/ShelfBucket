@@ -154,6 +154,7 @@
       };
       var showHelpPane;
       var helpPaneProgress = 0;
+      var hintMeter = 0;
       function unstupidify(str) {
         return str.toLowerCase().split("-").join("").split(" ").join("");
       }
@@ -171,6 +172,7 @@
         setInterval(() => {
           equationDisplay.innerText = equation;
           progress.style.width = (prg / 20) * 100 + "%";
+          generateHint();
           if (unstupidify(input.value) == unstupidify(answer)) {
             input.value = "";
             generateEquation();
@@ -188,6 +190,9 @@
           }
         }, 0);
         setInterval(()=>{
+          hintMeter++;
+        },1000);
+        setInterval(()=>{
           if (!window.lastTime) {
             window.lastTime = new Date().getTime();
           }
@@ -202,6 +207,7 @@
         },0);
       };
       function generateEquation() {
+        hintMeter = 0;
         var index = Math.floor(Object.keys(dictionary).length * Math.random());
         var key = Object.keys(dictionary)[index];
         if (Math.random() <= 0.5) {
@@ -234,6 +240,17 @@
       }
       function help() {
         showHelpPane = !showHelpPane;
+      }
+      function generateHint() {
+        var output = "";
+        for (var i = 0; i < answer.length; i++) {
+          if (i <= hintMeter) {
+            output += answer[i];
+          } else {
+            output += "*";
+          }
+        }
+        document.getElementById("hint").innerText = output;
       }
       function decideRanking() {
         var time = performance.now() - firstTime;
@@ -305,6 +322,7 @@
       <h1>ShelfBucket</h1>
       <p id="time">0.00</p>
       <h2 id="equation">1+1</h2>
+      <p id="hint"></p>
       <!--<button onclick="autoSolve()" disabled>Auto Solve (Unavailable)</button>-->
       <button onclick="help()">Help</button>
       <button onclick="skip()">Skip</button>
