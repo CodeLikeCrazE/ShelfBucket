@@ -25,10 +25,14 @@
         text-align: center;
         font-weight: bold;
       }
-      #rank {
-        padding: 20px;
+      #rnk {
+        padding: 10px 50px;
         color: white;
-        border-radius: 20px;
+        border-radius: 50px;
+        margin : 20px;
+        padding-bottom : 20px;
+      }
+      #rankText {
       }
       button {
         padding: 10px 20px;
@@ -185,6 +189,7 @@
             document.getElementById("play").style.display = "block";
             document.getElementById("win").style.display = "none";
             if (firstTime) {
+              window.rank = document.getElementById("rankText");
               decideRanking();
             }
           }
@@ -264,26 +269,31 @@
         var rankings = [
           {
             time: 5,
+            text: "CHEATER >:(",
+            color: "red",
+          },
+          {
+            time: 10,
             text: "INSANE",
             color: "black",
           },
           {
-            time: 10,
+            time: 15,
             text: "SUPER SPEEDY",
             color: "darkred",
           },
           {
-            time: 15,
+            time: 25,
             text: "SPEEDY",
             color: "red",
           },
           {
-            time: 20,
+            time: 30,
             text: "FAST",
             color: "orange",
           },
           {
-            time: 30,
+            time: 35,
             text: "GOOD",
             color: "green",
           },
@@ -313,7 +323,8 @@
           };
         }
         rank.innerText = activeRanking.text;
-        rank.style.backgroundColor = activeRanking.color;
+        document.getElementById("rankInfo").innerText = `Win in less than ${activeRanking.time * 2} seconds.`;
+        document.getElementById("rnk").style.backgroundColor = activeRanking.color;
       }
     </script>
   </head>
@@ -335,7 +346,7 @@
     <div id="win" class="center">
       <h1>ShelfBucket!</h1>
       <p>You win!</p>
-      <h2 id="rank"></h2>
+      <div id="rnk"><h2 id="rankText"></h2><p id="rankInfo"></p></div><p>done on rankingv2</p>
       <button onclick="window.location.reload()">Retry</button>
     </div>
     <div id="helpPane">
