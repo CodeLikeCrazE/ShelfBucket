@@ -85,6 +85,12 @@
         color : rgba(255,255,255,0.75);
         backdrop-filter: blur(5px);
       }
+      * {
+        transition : 0.25s;
+      }
+      button:hover {
+        transform : scale(1.1);
+      }
     </style>
     <script>
       var sqrt = Math.sqrt;
@@ -299,7 +305,7 @@
       <h1>ShelfBucket</h1>
       <p id="time">0.00</p>
       <h2 id="equation">1+1</h2>
-      <button onclick="autoSolve()" disabled>Auto Solve (Unavailable)</button>
+      <!--<button onclick="autoSolve()" disabled>Auto Solve (Unavailable)</button>-->
       <button onclick="help()">Help</button>
       <button onclick="skip()">Skip</button>
       <br />
